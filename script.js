@@ -46,6 +46,18 @@ for (let i = 0; i < scRows; i++) {
     newRow.appendChild(span);
     rowNums.appendChild(newRow);
 }
+if (document.body.clientWidth > document.body.clientHeight) {
+    document.documentElement.style.setProperty("--grid-size", "1vh")
+} else {
+    document.documentElement.style.setProperty("--grid-size", "1vw")
+}
+window.addEventListener("resize", function() {
+    if (document.body.clientWidth > document.body.clientHeight) {
+        document.documentElement.style.setProperty("--grid-size", "1vh")
+    } else {
+        document.documentElement.style.setProperty("--grid-size", "1vw")
+    }
+})
 function sc(newC) {
     c = newC;
     updateC();

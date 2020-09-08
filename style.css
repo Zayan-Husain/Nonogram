@@ -2,6 +2,15 @@
     --play-screen-color: #ffff6e;
     --create-screen-color: #6200be;
     --grid-columns: 3;
+    --grid-size: 650
+}
+body {
+    outline: none;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
 }
 .play-container,
 .play-container::before {
@@ -64,8 +73,8 @@
     transform: translate(-50%, -50%);
     display: grid;
     gap: 0;
-    width: 650px;
-    height: 650px;
+    width: calc(80 * var(--grid-size));
+    height: calc(80 * var(--grid-size));
 }
 .grid,
 .colNums {
@@ -83,7 +92,7 @@
 .rowNums .rowNum {
     transform: translateX(-100%);
     width: 35px;
-    height: calc((650 / var(--grid-columns)) * 1px);
+    height: calc((80 / var(--grid-columns)) * var(--grid-size));
     background: rgb(49, 49, 49);
     border-radius: 20px 0 0 20px;
 }
@@ -98,8 +107,8 @@
     color: white;
 }
 .square {
-    width: calc((650 / var(--grid-columns)) * 1px);
-    height: calc((650 / var(--grid-columns)) * 1px);
+    width: calc((80 / var(--grid-columns)) * var(--grid-size));
+    height: calc((80 / var(--grid-columns)) * var(--grid-size));
     padding: 0;
     box-sizing: border-box;
     background-color: white;
