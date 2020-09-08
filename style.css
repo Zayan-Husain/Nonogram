@@ -102,7 +102,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 2em;
+    font-size: calc(((80 / var(--grid-columns)) * var(--grid-size)) / 5);
     font-family: Arial, Helvetica, sans-serif;
     color: white;
 }
