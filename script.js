@@ -66,7 +66,9 @@ $(".play-container").addEventListener("click", function(){sc(1)})
 $(".create-container").addEventListener("click", function(){sc(2)})
 var sqs = $$(".square");
 for (const i of sqs) {
-    i.addEventListener("mousedown", function(e) {
+    console.log(i)
+    i.onmousedown = function(e) {
+        console.log("dd")
         window.addEventListener("mousemove", squareDrag)
         window.addEventListener("mouseup", squareUp)
         function squareDrag(e) {
@@ -94,7 +96,8 @@ for (const i of sqs) {
             window.removeEventListener("mousemove", squareDrag)
             window.removeEventListener("mouseup", squareUp)
         }
-    })
+    }
+    console.log(i.onclick)
     i.addEventListener("click", function(){squareClick(i)})
     i.addEventListener("contextmenu", function(e) {squareRightClick(i, e)})
 }
