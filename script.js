@@ -297,7 +297,9 @@ function updateWin() {
     }
 }
 function win() {
-    $(".title").innerHTML = "You Win!"
+    $(".title").innerHTML = "You Win!";
+    $(".winCircle").style.top = "50%";
+    $(".winCircle").style.transform = "translate(-50%, -50%)";
 }
 function arrInArr(a, b){
     for(var i = 0; i < a.length; i++){
@@ -307,4 +309,5 @@ function arrInArr(a, b){
     }
     return true;
 }
+win()
 // */
