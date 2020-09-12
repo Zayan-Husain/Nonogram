@@ -8,7 +8,6 @@ body {
     outline: none;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
     padding: 0;
     margin: 0;
     pointer-events: none;
@@ -132,6 +131,9 @@ img {
     left: 5%;
     top: 5%;
 }
+::-webkit-scrollbar {
+    display: none;
+}
 .winCircle {
     position: absolute;
     width: 200px;
@@ -150,4 +152,99 @@ img {
     left: 50%;
     transform: translateX(-50%);
     transition: 600ms;
+}
+.winCircle::before,
+.winCircle::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 10px;
+    background: rgb(0, 127, 201);
+    transition: all 500ms;
+    z-index: -1;
+}
+.winCircle::before {
+    transition: all 500ms !important;
+}
+.winCircle::after {
+    right: 0;
+}
+.winCircle.active::before {
+    left: -50vw;
+    right: 50%;
+}
+.winCircle.activeUp::before {
+    height: 100vh;
+}
+.winCircle.active::after {
+    right: -50vw;
+    left: 50%;
+}
+.winCircle.activeUp::after {
+    height: 100vh;
+}
+.winCircle span {
+    transition: all 500ms;
+}
+.btns {
+    transition: all 600ms;
+    opacity: 0;
+}
+.restartLvl {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    background: rgb(49, 47, 59);
+    color: white;
+    font-weight: 700;
+    border: none;
+    transition: all 300ms;
+    cursor: pointer;
+    padding: 10px;
+    transform-origin: center center;
+}
+.restartLvl:hover {
+    color: rgb(49, 47, 59);
+    background: rgb(240, 240, 240);
+    transform: scale(1.1) translate(-45%, -45%);
+}
+.newLevelSelect {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+}
+.newLevelSelect * {
+    display: inline-block;
+    margin: 10px;
+    border-radius: 10px;
+    background: rgb(49, 47, 59);
+    color: white;
+    font-weight: 700;
+    border: none;
+    transition: all 300ms;
+    cursor: pointer;
+}
+.newLevelSelect *:hover,
+.newLevelSelect select:active {
+    color: rgb(49, 47, 59);
+    background: rgb(240, 240, 240);
+    transform: scale(1.1);
+}
+.newLevelSelect select {
+    padding: 5px;
+}
+.newLevelSelect button {
+    padding: 10px !important;
+}
+* {
+    margin: 0;
+    pointer-events: all;
+    outline: none;
+    padding: 0;
 }

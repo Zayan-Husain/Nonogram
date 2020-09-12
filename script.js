@@ -7,6 +7,8 @@ var scRows = sqrGrid;
 var specialGrid = true;
 document.documentElement.style.setProperty("--grid-columns", "" + sqrGrid)
 var gridSqs = scCols * scRows;
+var gr = $(".grid")
+var sandboxMode = false;
 //C means container
 var ct = $(".container")
 function updateC() {
@@ -22,30 +24,51 @@ function updateC() {
     }
     ct.dataset.container = cn
 }
-for (let i = 0; i < gridSqs; i++) {
-    var gr = $(".grid");
-    var newSqr = document.createElement("div");
-    newSqr.classList = ["square square" + (i + 1)];
-    newSqr.dataset.active = "false"
-    newSqr.dataset.x = "false"
-    gr.appendChild(newSqr);
+function emptyGrid() {
+    $(".grid").innerHTML = ""
+    $(".colNums").innerHTML = ""
+    $(".rowNums").innerHTML = ""
+    for (let i = 0; i < gridSqs; i++) {
+        var gr = $(".grid");
+        var newSqr = document.createElement("div");
+        newSqr.classList = ["square square" + (i + 1)];
+        newSqr.dataset.active = "false"
+        newSqr.dataset.x = "false"
+        gr.appendChild(newSqr);
+    }
+    for (let i = 0; i < scCols; i++) {
+        var colNums = $(".colNums");
+        var newCol = document.createElement("div");
+        newCol.classList = ["colNum colNum" + (i + 1)];
+        var span = document.createElement("span");
+        newCol.appendChild(span);
+        colNums.appendChild(newCol);
+    }
+    for (let i = 0; i < scRows; i++) {
+        var rowNums = $(".rowNums");
+        var newRow = document.createElement("div");
+        newRow.classList = ["rowNum rowNum" + (i + 1)];
+        var span = document.createElement("span");
+        newRow.appendChild(span);
+        rowNums.appendChild(newRow);
+    }
+    createGridNumbers()
+    for (const i in grid) {
+        for (const j in grid[i]) {
+            if (grid[i][j] === 0) {
+                var square = $(".grid").children[(Number(i) * scCols) + (Number(j) + 1) - 1]
+                var random = Math.round(Math.random())
+                if (random === 1) {
+                    square.dataset.x = "true"
+                    var imgx = document.createElement("img");
+                    imgx.src = "gfx/gray x.png"
+                    square.appendChild(imgx)
+                }
+            }
+        }
+    }
 }
-for (let i = 0; i < scCols; i++) {
-    var colNums = $(".colNums");
-    var newCol = document.createElement("div");
-    newCol.classList = ["colNum colNum" + (i + 1)];
-    var span = document.createElement("span");
-    newCol.appendChild(span);
-    colNums.appendChild(newCol);
-}
-for (let i = 0; i < scRows; i++) {
-    var rowNums = $(".rowNums");
-    var newRow = document.createElement("div");
-    newRow.classList = ["rowNum rowNum" + (i + 1)];
-    var span = document.createElement("span");
-    newRow.appendChild(span);
-    rowNums.appendChild(newRow);
-}
+emptyGrid()           //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////EMPTY THE GRID
 if (document.body.clientWidth > document.body.clientHeight) {
     document.documentElement.style.setProperty("--grid-size", "1vh")
 } else {
@@ -64,79 +87,13 @@ function sc(newC) {
 }
 $(".play-container").addEventListener("click", function(){sc(1)})
 $(".create-container").addEventListener("click", function(){sc(2)})
-var sqs = $$(".square");
-for (const i of sqs) {
-    console.log(i)
-    i.onmousedown = function(e) {
-        console.log("dd")
-        window.addEventListener("mousemove", squareDrag)
-        window.addEventListener("mouseup", squareUp)
-        function squareDrag(e) {
-            e.preventDefault()
-            var sqr = e.target;
-            if (sqr.dataset.unchangeable === "true") return;
-            if (sqr.classList.contains("square")) {
-                if (e.which === 1) {
-                    squareClick(sqr, false)
-                }
-                if (e.which === 3) {
-                    e.preventDefault()
-                    squareRightClick(sqr, e)
-                }
-            }
-            for(var j of $$(".square")) {
-                j.dataset.unchangeable = "false";
-            }
-            sqr.dataset.unchangeable = "true";
-        }
-        function squareUp(e) {
-            for(var j of $$(".square")) {
-                j.dataset.unchangeable = "false";
-            }
-            window.removeEventListener("mousemove", squareDrag)
-            window.removeEventListener("mouseup", squareUp)
-        }
-    }
-    console.log(i.onclick)
-    i.addEventListener("click", function(){squareClick(i)})
-    i.addEventListener("contextmenu", function(e) {squareRightClick(i, e)})
-}
-function squareClick(i, unclick = true) {
-    if (i.dataset.x === "true") {
-        i.dataset.x = "false"
-        i.removeChild(i.children[0])
-    }
-    if (i.dataset.active === "true" && unclick) {
-        i.style.backgroundColor = "white";
-        i.dataset.active = "false";
-        updateWin()
-        updateNumbers()
-        return;
-    }
-    i.dataset.active = "true"
-    i.style.backgroundColor = "rgb(17, 50, 199)"
-    updateWin()
-    updateNumbers()
-}
-function squareRightClick(i, e) {
-    e.preventDefault();
-    if (i.dataset.active === "true") {
-        i.dataset.active = "false"
-        i.style.background = "white"
-    }
-    if (i.dataset.x === "false") {
-        i.dataset.x = "true";
-        var imgx = document.createElement("img")
-        imgx.src = "gfx/gray x.png";
-        i.appendChild(imgx);
-    } else if (i.dataset.x === "true") {
-        i.removeChild(i.children[0])
-        i.dataset.x = "false";
-    }
-    updateNumbers()
-}
 var grid = []
 if (!specialGrid) {
+    generateRandomSquares()
+} else {
+    generatePictureGrid()
+}
+function generateRandomSquares() {
     for (var i = 0; i < scRows; i++) {
         grid[i] = []
         for(var j = 0; j < scCols; j++) {
@@ -148,7 +105,8 @@ if (!specialGrid) {
             grid[i][j] = Math.round(Math.random());
         }
     }
-} else {
+}
+function generatePictureGrid() {
     var sgArray = grids[sqrGrid + ""]
     var randomGrid = Math.round(Math.random() * (sgArray.length - 1) + 1) - 1
     grid = sgArray[randomGrid]
@@ -181,20 +139,98 @@ function createGridNumbers() {
     for (var i in grid) {
         var rowNumber = Number(i) + 1
         var num = $(".rowNum" + rowNumber).children[0]
+        console.log(rowNumber)
         var row = grid[i]
             .toString()
             .replace(/,/gi, "")
             .replace(/0/gi, "_")
             .split("_")
-        for (var j in row) {
-            if (row[j] !== "") {
-                var number = row[j].length;
+        for (var k in row) {
+            console.log(row[k])
+            if (row[k] !== "") {
+                var number = row[k].length;
                 num.innerHTML += number + " "
             }
         }
     }
+    sqsAddEventListener()
 }
-createGridNumbers()
+if (!sandboxMode) {
+    emptyGrid()
+}
+sqsAddEventListener();
+function sqsAddEventListener() {
+    var sqs = $$(".square");
+    for (const i of sqs) {
+        i.onmousedown = function () {
+            window.addEventListener("mousemove", squareDrag);
+            window.addEventListener("mouseup", squareUp);
+            function squareDrag(e) {
+                e.preventDefault();
+                var sqr = e.target;
+                if (sqr.dataset.unchangeable === "true")
+                    return;
+                if (sqr.classList.contains("square")) {
+                    if (e.which === 1) {
+                        squareClick(sqr, false);
+                    }
+                    if (e.which === 3) {
+                        e.preventDefault();
+                        squareRightClick(sqr, e);
+                    }
+                }
+                for (var j of $$(".square")) {
+                    j.dataset.unchangeable = "false";
+                }
+                sqr.dataset.unchangeable = "true";
+            }
+            function squareUp() {
+                for (var j of $$(".square")) {
+                    j.dataset.unchangeable = "false";
+                }
+                window.removeEventListener("mousemove", squareDrag);
+                window.removeEventListener("mouseup", squareUp);
+            }
+        };
+        i.onclick = function () { squareClick(i); };
+        i.oncontextmenu = function (e) { squareRightClick(i, e); };
+    }
+}
+
+function squareClick(i, unclick = true) {
+    if (i.dataset.x === "true") {
+        i.dataset.x = "false"
+        i.removeChild(i.children[0])
+    }
+    if (i.dataset.active === "true" && unclick) {
+        i.style.backgroundColor = "white";
+        i.dataset.active = "false";
+        updateWin()
+        if (!sandboxMode) updateNumbers()
+        return;
+    }
+    i.dataset.active = "true"
+    i.style.backgroundColor = "rgb(17, 50, 199)"
+    updateWin()
+    if (!sandboxMode) updateNumbers()
+}
+function squareRightClick(i, e) {
+    e.preventDefault();
+    if (i.dataset.active === "true") {
+        i.dataset.active = "false"
+        i.style.background = "white"
+    }
+    if (i.dataset.x === "false") {
+        i.dataset.x = "true";
+        var imgx = document.createElement("img")
+        imgx.src = "gfx/gray x.png";
+        i.appendChild(imgx);
+    } else if (i.dataset.x === "true") {
+        i.removeChild(i.children[0])
+        i.dataset.x = "false";
+    }
+    if (!sandboxMode) updateNumbers()
+}
 var screenGrid = [];
 var scColumns = [];
 var scArr = [];
@@ -223,20 +259,6 @@ function updateScreenGrid() {
     return screenGrid;
 }
 updateScreenGrid()
-for (const i in grid) {
-    for (const j in grid[i]) {
-        if (grid[i][j] === 0) {
-            var square = $(".grid").children[(Number(i) * scCols) + (Number(j) + 1) - 1]
-            var random = Math.round(Math.random())
-            if (random === 1) {
-                square.dataset.x = "true"
-                var imgx = document.createElement("img");
-                imgx.src = "gfx/gray x.png"
-                square.appendChild(imgx)
-            }
-        }
-    }
-}
 //if any column is finished, show it visually.
 function updateNumbers() {
     for (var i in scColumns) {
@@ -274,7 +296,9 @@ function updateNumbers() {
         }
     }
 }
-updateNumbers()
+if (!sandboxMode) {
+    updateNumbers()
+}
 function updateWin() {
     updateScreenGrid()
     var newGrid = [];
@@ -293,14 +317,80 @@ function updateWin() {
     }
     var sameContent = arrInArr(newGrid, newSCGrid)
     if (sameContent && newGrid.length === newSCGrid.length) {
-        win()
+        setTimeout(() => {
+            win()
+        }, 300)
     }
 }
 function win() {
-    $(".title").innerHTML = "You Win!";
     $(".winCircle").style.top = "50%";
     $(".winCircle").style.transform = "translate(-50%, -50%)";
+    $(".winCircle").style.transition = "600ms"
+    setTimeout(() => {
+        console.log($(".winCircle"))
+        $(".winCircle").classList.add("active")
+    }, 600)
+    setTimeout(() => {
+        $(".winCircle").classList.add("activeUp")
+        $(".winCircle").style.transition = "0s" 
+    }, 1100)
+    setTimeout(() => {
+        $(".winCircle").children[1].style.opacity = "1"
+    }, 2000)
+    setTimeout(() => {
+        $(".winCircle").style.fontSize = "5.6em"
+        $(".winCircle").children[0].style.whiteSpace = "pre"
+        $(".winCircle").children[0].style.marginBottom = "7.5em"
+    }, 900)
 }
+function closeWin() {
+    $(".winCircle").children[1].style.opacity = "0"
+    $(".winCircle").style.top = "50%";
+    $(".winCircle").style.transition = "600ms"
+    setTimeout(() => {
+        $(".winCircle").classList.remove("activeUp")
+    }, 1100)
+    setTimeout(() => {
+        $(".winCircle").classList.remove("active")
+    }, 1900)
+    setTimeout(() => {
+        $(".winCircle").style.top = "100vh"
+        $(".winCircle").style.transform = "";
+    }, 2700)
+    $(".winCircle").style.fontSize = "1.75em"
+    $(".winCircle").children[0].style.marginBottom = "0em"
+}
+$(".restartLvl").addEventListener("click", function(){closeWin();emptyGrid()})
+$(".newLvl").addEventListener("click", function(){closeWin();newLevel()})
+function newLevel() {                                                        //////////////////////////////////NEW LEVEL
+    // make sqrGrid (size of both scCols and scRows) the grid size dropdown box's value
+    sqrGrid = Number($(".grid_size_select").value.split("x")[0])  // for example, "8x8"
+    createLevel()
+}
+function createLevel() {
+    scCols = sqrGrid;
+    scRows = sqrGrid;
+    gridSqs = scCols * scRows
+    gridType = $(".grid_select").value.split("x")[0]
+    if (gridType === "r") {
+        generatePictureGrid()
+    } else if (gridType === "rs") {
+        generateRandomSquares()
+    }
+    document.documentElement.style.setProperty("--grid-columns", "" + sqrGrid)
+    columns = [];
+    cArr = [];
+    for(var i in grid) {
+        cArr = [] //column array; if its first column, and theres three rows, it would be [grid[0][0], grid[1][0], grid[2][0]]
+        for (var j = 0; j < grid.length; j++) {
+            cArr.push(grid[j][i])
+        }
+        columns.push(cArr)
+    }
+    emptyGrid()
+}
+document.body.onscroll = function(e){e.preventDefault();document.body.scrollIntoView(true);return;}
+//$(".grid_size_select").onchange = function(e) {$(".grid_size_select").value = e.srcElement.value;console.log(this.value, e.srcElement.value, this)}
 function arrInArr(a, b){
     for(var i = 0; i < a.length; i++){
       if(b.indexOf(a[i]) === -1 || a[i] !== b[i]) {
@@ -309,5 +399,5 @@ function arrInArr(a, b){
     }
     return true;
 }
-win()
+// win()
 // */

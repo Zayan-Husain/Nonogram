@@ -16,7 +16,37 @@
         <div class="grid"></div>
     </div>
     <div class="win">
-        <div class="winCircle">YOU WIN!</div>
+        <div class="winCircle">
+            <span>YOU WIN!</span>
+            <div class="btns" style="pointer-events: all;">
+                <button class="restartLvl">Restart Level</button>
+                <div class="hr"></div>
+                <div class="newLevelSelect">
+                    <select class="grid_size_select" value="1x1">
+                        <option value="1x1">1 x 1</option>
+                        <option value="2x2">2 x 2</option>
+                        <option value="3x3">3 x 3</option>
+                        <option value="4x4">4 x 4</option>
+                        <option value="5x5">5 x 5</option>
+                        <option value="6x6">6 x 6</option>
+                        <option value="7x7">7 x 7</option>
+                        <option value="8x8">8 x 8</option>
+                        <option value="9x9">9 x 9</option>
+                        <option value="10x10">10 x 10</option>
+                        <option value="11x11">11 x 11</option>
+                        <option value="12x12">12 x 12</option>
+                        <option value="13x13">13 x 13</option>
+                        <option value="14x14">14 x 14</option>
+                        <option value="15x15">15 x 15</option>
+                    </select>
+                    <select class="grid_select" value="r">
+                        <option value="r">Random Picture</option>
+                        <option value="rs">Random Squares</option>
+                    </select>
+                    <button class="newLvl">New Level</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="./grids.js"></script>
     <script src="./script.js"></script>
