@@ -1,7 +1,7 @@
 // /*
 var $ = q => document.querySelector(q), $$ = q => document.querySelectorAll(q)
 var c;
-var sqrGrid = 5;
+var sqrGrid = 3;
 var scCols = sqrGrid;
 var scRows = sqrGrid;
 var specialGrid = true;
@@ -24,6 +24,22 @@ function updateC() {
     }
     ct.dataset.container = cn
 }
+function sc(newC) {
+    c = newC;
+    updateC();
+}
+$(".play-container").addEventListener("click", function(){
+    sc(1);
+    sandboxMode = false;
+    emptyGrid();
+    sqsAddEventListener();
+})
+$(".create-container").addEventListener("click", function(){
+    sc(2);
+    sandboxMode = true;
+    emptyGrid();
+    sqsAddEventListener();
+})
 function emptyGrid() {
     $(".grid").innerHTML = ""
     $(".colNums").innerHTML = ""
@@ -52,6 +68,7 @@ function emptyGrid() {
         newRow.appendChild(span);
         rowNums.appendChild(newRow);
     }
+    if (sandboxMode) return;
     createGridNumbers()
     for (const i in grid) {
         for (const j in grid[i]) {
@@ -81,12 +98,6 @@ window.addEventListener("resize", function() {
         document.documentElement.style.setProperty("--grid-size", "1vw")
     }
 })
-function sc(newC) {
-    c = newC;
-    updateC();
-}
-$(".play-container").addEventListener("click", function(){sc(1)})
-$(".create-container").addEventListener("click", function(){sc(2)})
 var grid = []
 if (!specialGrid) {
     generateRandomSquares()
@@ -139,14 +150,12 @@ function createGridNumbers() {
     for (var i in grid) {
         var rowNumber = Number(i) + 1
         var num = $(".rowNum" + rowNumber).children[0]
-        console.log(rowNumber)
         var row = grid[i]
             .toString()
             .replace(/,/gi, "")
             .replace(/0/gi, "_")
             .split("_")
         for (var k in row) {
-            console.log(row[k])
             if (row[k] !== "") {
                 var number = row[k].length;
                 num.innerHTML += number + " "
@@ -390,7 +399,6 @@ function createLevel() {
     emptyGrid()
 }
 document.body.onscroll = function(e){e.preventDefault();document.body.scrollIntoView(true);return;}
-//$(".grid_size_select").onchange = function(e) {$(".grid_size_select").value = e.srcElement.value;console.log(this.value, e.srcElement.value, this)}
 function arrInArr(a, b){
     for(var i = 0; i < a.length; i++){
       if(b.indexOf(a[i]) === -1 || a[i] !== b[i]) {
@@ -399,5 +407,21 @@ function arrInArr(a, b){
     }
     return true;
 }
-// win()
+////////////////////////////////////////////////////////////////////////SANDBOX SAVING GRIDS
+var ctrlDown = false
+window.addEventListener("keydown", function(e) {
+    if (e.key === "Control") ctrlDown = true
+    if (e.key === "s" && ctrlDown) {
+        e.preventDefault()
+        if (sandboxMode) save_(e)
+    }
+})
+window.addEventListener("keyup", function(e) {if (e.key === "Control") ctrlDown = false;})
+function save_(e) {
+    var gridSize = sqrGrid;
+    var newSaveGrids = grids;
+    if (newSaveGrids[gridSize] === undefined) newSaveGrids[gridSize] = [screenGrid]
+    else newSaveGrids[gridSize].push(screenGrid)
+    localStorage.setItem("save-grids", JSON.stringify(newSaveGrids))
+}
 // */
