@@ -9,6 +9,7 @@ document.documentElement.style.setProperty("--grid-columns", "" + sqrGrid)
 var gridSqs = scCols * scRows;
 var gr = $(".grid")
 var sandboxMode = false;
+var cl = l => console.log(l)
 //C means container
 var ct = $(".container")
 function updateC() {
@@ -118,9 +119,11 @@ function generateRandomSquares() {
     }
 }
 function generatePictureGrid() {
-    var sgArray = grids[sqrGrid + ""]
-    var randomGrid = Math.round(Math.random() * (sgArray.length - 1) + 1) - 1
-    grid = sgArray[randomGrid]
+    if (grids[sqrGrid] !== undefined) {
+        var sgArray = grids[sqrGrid + ""]
+        var randomGrid = Math.round(Math.random() * (sgArray.length - 1) + 1) - 1
+        grid = sgArray[randomGrid]
+    } else generateRandomSquares()
 }
 var columns = [];
 var cArr = [];
@@ -172,16 +175,24 @@ function sqsAddEventListener() {
     var sqs = $$(".square");
     for (const i of sqs) {
         i.onmousedown = function () {
-            window.addEventListener("mousemove", squareDrag);
+            var drag = false;
+            cl(i.dataset.active)
+            if (i.dataset.active === "true") window.addEventListener("mousemove", sqrDragDoTrue );
+            else if (i.dataset.active === "false") window.addEventListener("mousemove", sqrDragDoFalse);
+            function sqrDragDoTrue(e) {squareDrag(e, true)}
+            function sqrDragDoFalse(e) {squareDrag(e, false)}
             window.addEventListener("mouseup", squareUp);
-            function squareDrag(e) {
+            function squareDrag(e, off = false) {
+                drag = true
                 e.preventDefault();
+                i.onclick = null
                 var sqr = e.target;
                 if (sqr.dataset.unchangeable === "true")
                     return;
                 if (sqr.classList.contains("square")) {
                     if (e.which === 1) {
-                        squareClick(sqr, false);
+                        console.log(off)
+                        squareClick(sqr, false, off);
                     }
                     if (e.which === 3) {
                         e.preventDefault();
@@ -194,19 +205,25 @@ function sqsAddEventListener() {
                 sqr.dataset.unchangeable = "true";
             }
             function squareUp() {
+                console.log("up")
                 for (var j of $$(".square")) {
                     j.dataset.unchangeable = "false";
                 }
-                window.removeEventListener("mousemove", squareDrag);
+                window.removeEventListener("mousemove", sqrDragDoTrue);
+                window.removeEventListener("mousemove", sqrDragDoFalse);
                 window.removeEventListener("mouseup", squareUp);
+                if (!drag) {
+                    squareClick(i, true);
+                }
             }
         };
-        i.onclick = function () { squareClick(i); };
         i.oncontextmenu = function (e) { squareRightClick(i, e); };
     }
 }
 
-function squareClick(i, unclick = true) {
+function squareClick(i, unclick = true, off) {
+    console.log(i.onclick)
+    console.log("click")
     if (i.dataset.x === "true") {
         i.dataset.x = "false"
         i.removeChild(i.children[0])
@@ -218,8 +235,14 @@ function squareClick(i, unclick = true) {
         if (!sandboxMode) updateNumbers()
         return;
     }
-    i.dataset.active = "true"
-    i.style.backgroundColor = "rgb(17, 50, 199)"
+    if (!off) {
+        i.dataset.active = "true"
+        i.style.backgroundColor = "rgb(17, 50, 199)"
+    }
+    else {
+        i.dataset.active = "false"
+        i.style.backgroundColor = "white"
+    }
     updateWin()
     if (!sandboxMode) updateNumbers()
 }
